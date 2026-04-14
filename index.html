@@ -3,141 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Office Tracker PT</title>
+    <title>Office Tracker Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .day-card { transition: all 0.2s; cursor: pointer; }
-        .day-card.selected { background-color: #3b82f6; color: white; border-color: #2563eb; }
-        .holiday { background-color: #fee2e2; color: #991b1b; cursor: not-allowed; opacity: 0.7; }
-        .weekend { background-color: #f3f4f6; color: #9ca3af; cursor: not-allowed; }
+        .day-card { transition: all 0.2s; cursor: pointer; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid #e5e7eb; font-weight: 500; }
+        .day-card.selected { background-color: #3b82f6; color: white; border-color: #2563eb; box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5); }
+        .holiday { background-color: #fee2e2; color: #991b1b; cursor: not-allowed; opacity: 0.8; border-color: #fecaca; }
+        .weekend { background-color: #f3f4f6; color: #9ca3af; cursor: not-allowed; border: none; }
+        .other-month { opacity: 0; pointer-events: none; }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen p-4 md:p-8">
+<body class="bg-slate-100 min-h-screen p-4">
 
-    <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
-        <header class="mb-8 border-b pb-4">
-            <h1 class="text-2xl font-bold text-gray-800">🇵🇹 Office Day Tracker</h1>
-            <p id="currentMonthYear" class="text-gray-500 font-medium italic"></p>
-        </header>
+    <div class="max-w-md mx-auto bg-white rounded-2xl shadow-xl overflow-hidden p-6">
+        <div class="flex items-center justify-between mb-6">
+            <button onclick="changeMonth(-1)" class="p-2 hover:bg-gray-100 rounded-full text-xl">◀</button>
+            <h1 id="monthDisplay" class="text-xl font-bold text-gray-800">Month Year</h1>
+            <button onclick="changeMonth(1)" class="p-2 hover:bg-gray-100 rounded-full text-xl">▶</button>
+        </div>
 
-        <div class="grid grid-cols-2 gap-4 mb-8">
-            <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
-                <p class="text-sm text-blue-600 font-semibold uppercase">Goal (60%)</p>
-                <p class="text-3xl font-bold text-blue-900"><span id="goalDays">0</span> days</p>
+        <div class="grid grid-cols-2 gap-3 mb-6">
+            <div class="bg-blue-50 p-3 rounded-xl border border-blue-100 text-center">
+                <p class="text-[10px] text-blue-600 font-bold uppercase tracking-wider">Goal (60%)</p>
+                <p class="text-2xl font-black text-blue-900"><span id="goalDays">0</span>d</p>
             </div>
-            <div class="bg-green-50 p-4 rounded-lg border border-green-100">
-                <p class="text-sm text-green-600 font-semibold uppercase">Completed</p>
-                <p class="text-3xl font-bold text-green-900"><span id="doneDays">0</span> days</p>
+            <div class="bg-green-50 p-3 rounded-xl border border-green-100 text-center">
+                <p class="text-[10px] text-green-600 font-bold uppercase tracking-wider">Done</p>
+                <p class="text-2xl font-black text-green-900"><span id="doneDays">0</span>d</p>
             </div>
         </div>
 
-        <div id="statusMessage" class="mb-6 p-3 rounded-md text-center font-medium"></div>
-
-        <div class="grid grid-cols-7 gap-2 text-center mb-2">
-            <div class="text-xs font-bold text-gray-400">MON</div>
-            <div class="text-xs font-bold text-gray-400">TUE</div>
-            <div class="text-xs font-bold text-gray-400">WED</div>
-            <div class="text-xs font-bold text-gray-400">THU</div>
-            <div class="text-xs font-bold text-gray-400">FRI</div>
-            <div class="text-xs font-bold text-gray-400">SAT</div>
-            <div class="text-xs font-bold text-gray-400">SUN</div>
+        <div class="grid grid-cols-7 gap-1 text-center mb-2 text-[10px] font-bold text-gray-400">
+            <div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div><div>S</div>
         </div>
-        <div id="calendarGrid" class="grid grid-cols-7 gap-2"></div>
-        
-        <button onclick="resetData()" class="mt-8 text-xs text-red-400 hover:text-red-600 underline">Clear all data</button>
+        <div id="calendarGrid" class="grid grid-cols-7 gap-1 mb-6"></div>
+
+        <div class="border-t pt-4">
+            <label class="block text-sm font-bold text-gray-700 mb-2">Vacation / Extra Holidays (DD-MM)</label>
+            <div class="flex gap-2 mb-2">
+                <input type="text" id="holidayInput" placeholder="e.g. 14-04" class="flex-1 border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-400">
+                <button onclick="addHoliday()" class="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-black transition">Add</button>
+            </div>
+            <div id="holidayTags" class="flex flex-wrap gap-1 mb-4"></div>
+            
+            <button onclick="resetAll()" class="w-full text-xs text-red-400 hover:text-red-500 mt-2">Clear all history</button>
+        </div>
     </div>
 
     <script>
-        const holidays = ["01-01", "04-25", "05-01", "06-10", "08-15", "10-05", "11-01", "12-01", "12-08", "12-25"];
-        const now = new Date();
-        const month = now.getMonth();
-        const year = now.getFullYear();
+        let viewDate = new Date(); // Controls the month currently being viewed
+        const baseHolidays = ["01-01", "04-25", "05-01", "06-10", "08-15", "10-05", "11-01", "12-01", "12-08", "12-25"];
         
-        let selectedDays = JSON.parse(localStorage.getItem('officeDays') || '[]');
+        // Load data from LocalStorage
+        let customHolidays = JSON.parse(localStorage.getItem('customHolidays') || '[]');
+        let selectedDays = JSON.parse(localStorage.getItem('officeTrackingData') || '{}');
 
-        function init() {
-            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            document.getElementById('currentMonthYear').innerText = `${monthNames[month]} ${year}`;
-            renderCalendar();
-        }
+        function render() {
+            const month = viewDate.getMonth();
+            const year = viewDate.getFullYear();
+            const monthKey = `${year}-${month}`; // Unique key for each month's data
 
-        function renderCalendar() {
+            // Update Header
+            const names = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            document.getElementById('monthDisplay').innerText = `${names[month]} ${year}`;
+
             const grid = document.getElementById('calendarGrid');
             grid.innerHTML = '';
             
-            const firstDay = new Date(year, month, 1).getDay(); // 0 (Sun) to 6 (Sat)
+            const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
-            
-            // Adjust for European Monday-start: Transform Sun=0 to 6, Mon=1 to 0
             const offset = firstDay === 0 ? 6 : firstDay - 1;
 
-            let workingDaysCount = 0;
+            let workingDays = 0;
+            const currentMonthSelections = selectedDays[monthKey] || [];
 
-            // Padding for start of month
-            for (let i = 0; i < offset; i++) {
-                grid.innerHTML += `<div></div>`;
-            }
+            // Add empty slots
+            for (let i = 0; i < offset; i++) grid.innerHTML += `<div class="other-month"></div>`;
 
             for (let d = 1; d <= daysInMonth; d++) {
                 const dateObj = new Date(year, month, d);
                 const dayOfWeek = dateObj.getDay();
-                const dateStr = `${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const dateStr = `${String(d).padStart(2, '0')}-${String(month + 1).padStart(2, '0')}`;
                 
                 const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
-                const isHoliday = holidays.includes(dateStr);
-                const isSelected = selectedDays.includes(d);
+                const isHoliday = baseHolidays.includes(`${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`) || customHolidays.includes(dateStr);
+                const isSelected = currentMonthSelections.includes(d);
 
-                let classes = "h-12 flex items-center justify-center rounded-md border text-sm font-medium day-card ";
-                let onClick = `toggleDay(${d})`;
+                let classes = "day-card ";
+                let clickAction = `toggleDay(${d})`;
 
-                if (isWeekend) { classes += "weekend"; onClick = ""; }
-                else if (isHoliday) { classes += "holiday"; onClick = ""; }
+                if (isWeekend) { classes += "weekend"; clickAction = ""; }
+                else if (isHoliday) { classes += "holiday"; clickAction = ""; }
                 else {
-                    workingDaysCount++;
+                    workingDays++;
                     if (isSelected) classes += "selected";
                 }
 
-                grid.innerHTML += `<div onclick="${onClick}" class="${classes}">${d}</div>`;
-            }
-
-            // Calculations
-            const goal = Math.ceil(workingDaysCount * 0.6);
-            const done = selectedDays.length;
-            const remaining = goal - done;
-
-            document.getElementById('goalDays').innerText = goal;
-            document.getElementById('doneDays').innerText = done;
-            
-            const statusBox = document.getElementById('statusMessage');
-            if (remaining > 0) {
-                statusBox.innerText = `You still need to go ${remaining} more days this month.`;
-                statusBox.className = "mb-6 p-3 rounded-md text-center font-medium bg-yellow-100 text-yellow-800";
-            } else {
-                statusBox.innerText = "Goal reached! Enjoy your remote work! 🎉";
-                statusBox.className = "mb-6 p-3 rounded-md text-center font-medium bg-green-100 text-green-800";
-            }
-        }
-
-        function toggleDay(day) {
-            const index = selectedDays.indexOf(day);
-            if (index > -1) {
-                selectedDays.splice(index, 1);
-            } else {
-                selectedDays.push(day);
-            }
-            localStorage.setItem('officeDays', JSON.stringify(selectedDays));
-            renderCalendar();
-        }
-
-        function resetData() {
-            if(confirm("Are you sure you want to clear your marked days?")) {
-                selectedDays = [];
-                localStorage.removeItem('officeDays');
-                renderCalendar();
-            }
-        }
-
-        init();
-    </script>
-</body>
-</html>
+                grid.innerHTML += `<div onclick="${clickAction}"
