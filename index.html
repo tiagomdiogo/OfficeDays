@@ -1,186 +1,706 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Office Tracker Pro</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .day-card { transition: all 0.2s; cursor: pointer; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid #e5e7eb; font-weight: 600; font-size: 0.875rem; }
-        .day-card.selected { background-color: #3b82f6; color: white; border-color: #2563eb; }
-        .holiday { background-color: #fee2e2; color: #991b1b; cursor: not-allowed; border-color: #fecaca; opacity: 0.8; }
-        .weekend { background-color: #f3f4f6; color: #9ca3af; cursor: not-allowed; border: none; }
-        .empty { visibility: hidden; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Office Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f0ede8;
+      --card: #ffffff;
+      --text: #1a1a1a;
+      --text-muted: #888;
+      --office: #1a1a1a;
+      --office-text: #ffffff;
+      --holiday: #e8d5c4;
+      --holiday-text: #8a5a3a;
+      --weekend: #e8e5e0;
+      --weekend-text: #bbb;
+      --border: #e0ddd8;
+      --accent: #2563eb;
+      --accent-light: #eff6ff;
+      --danger: #dc2626;
+      --radius: 10px;
+      --font-mono: 'DM Mono', monospace;
+      --font-sans: 'DM Sans', sans-serif;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 24px 16px 48px;
+      color: var(--text);
+    }
+
+    .app {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .header-title {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    /* Auth button */
+    .auth-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      cursor: pointer;
+      color: var(--text);
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .auth-btn:hover { background: var(--bg); border-color: #ccc; }
+    .auth-btn .avatar {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--office);
+      color: var(--office-text);
+      font-size: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 600;
+    }
+    .auth-btn .google-icon { width: 14px; height: 14px; flex-shrink: 0; }
+
+    /* Card */
+    .card {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 24px;
+      border: 1px solid var(--border);
+    }
+
+    /* Month nav */
+    .month-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .nav-btn {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: none;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      transition: all 0.15s;
+    }
+    .nav-btn:hover { background: var(--bg); color: var(--text); }
+    .month-label {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .stat {
+      background: var(--bg);
+      border-radius: var(--radius);
+      padding: 12px 10px;
+      text-align: center;
+    }
+    .stat-val {
+      font-family: var(--font-mono);
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-val.over { color: #16a34a; }
+    .stat-val.under { color: var(--danger); }
+    .stat-label {
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-muted);
+    }
+
+    /* Progress bar */
+    .progress-wrap {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      border-radius: 2px;
+      background: var(--office);
+      transition: width 0.3s ease;
+    }
+    .progress-bar.done { background: #16a34a; }
+
+    /* Day headers */
+    .day-headers {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 6px;
+    }
+    .day-hdr {
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      font-weight: 500;
+      padding: 2px 0;
+    }
+
+    /* Calendar grid */
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 20px;
+    }
+
+    .day {
+      aspect-ratio: 1;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+      border: 1.5px solid transparent;
+      transition: all 0.12s;
+      position: relative;
+    }
+    .day.empty { visibility: hidden; }
+    .day.weekend {
+      background: var(--weekend);
+      color: var(--weekend-text);
+    }
+    .day.holiday {
+      background: var(--holiday);
+      color: var(--holiday-text);
+      cursor: default;
+    }
+    .day.holiday::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--holiday-text);
+      opacity: 0.5;
+    }
+    .day.workday {
+      background: var(--bg);
+      color: var(--text);
+      cursor: pointer;
+      border-color: var(--border);
+    }
+    .day.workday:hover {
+      border-color: #aaa;
+      transform: scale(1.06);
+    }
+    .day.office {
+      background: var(--office);
+      color: var(--office-text);
+      border-color: var(--office);
+    }
+    .day.office:hover {
+      background: #333;
+      transform: scale(1.06);
+    }
+    .day.today-ring {
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 18px;
+    }
+
+    /* Vacation input */
+    .section-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .input-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .input-row input {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 8px 12px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .input-row input:focus { border-color: #aaa; }
+    .input-row input::placeholder { color: var(--text-muted); }
+    .add-btn {
+      background: var(--office);
+      color: var(--office-text);
+      border: none;
+      border-radius: var(--radius);
+      padding: 8px 14px;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .add-btn:hover { background: #333; }
+
+    /* Tags */
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; min-height: 0; }
+    .tag {
+      display: flex; align-items: center; gap: 4px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .tag button {
+      background: none; border: none; cursor: pointer;
+      color: var(--text-muted); font-size: 14px; line-height: 1;
+      padding: 0 0 0 2px;
+      transition: color 0.12s;
+    }
+    .tag button:hover { color: var(--danger); }
+
+    /* Reset */
+    .reset-btn {
+      display: block;
+      margin: 0 auto;
+      background: none;
+      border: none;
+      font-size: 11px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: color 0.15s;
+      padding: 4px;
+    }
+    .reset-btn:hover { color: var(--danger); }
+
+    /* Loading overlay */
+    .loading {
+      position: fixed; inset: 0;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100;
+      transition: opacity 0.3s;
+    }
+    .loading.hidden { opacity: 0; pointer-events: none; }
+    .spinner {
+      width: 24px; height: 24px;
+      border: 2px solid var(--border);
+      border-top-color: var(--office);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(8px);
+      background: var(--office);
+      color: var(--office-text);
+      font-size: 12px;
+      font-family: var(--font-sans);
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 20px;
+      opacity: 0;
+      transition: all 0.2s;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 200;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
 </head>
-<body class="bg-slate-100 min-h-screen p-4 flex items-center justify-center">
+<body>
 
-    <div class="w-full max-w-md bg-white rounded-3xl shadow-xl p-6">
-        <div class="flex items-center justify-between mb-6">
-            <button onclick="changeMonth(-1)" class="p-2 hover:bg-gray-100 rounded-full">◀</button>
-            <h1 id="monthDisplay" class="text-xl font-bold text-gray-800 uppercase tracking-tight">Loading...</h1>
-            <button onclick="changeMonth(1)" class="p-2 hover:bg-gray-100 rounded-full">▶</button>
-        </div>
+<div class="loading" id="loading"><div class="spinner"></div></div>
+<div class="toast" id="toast"></div>
 
-        <div class="grid grid-cols-2 gap-4 mb-6">
-            <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100 text-center">
-                <p class="text-[10px] text-blue-600 font-bold uppercase tracking-widest mb-1">Goal (60%)</p>
-                <p class="text-3xl font-black text-blue-900 leading-none"><span id="goalDays">0</span>d</p>
-            </div>
-            <div class="bg-green-50 p-4 rounded-2xl border border-green-100 text-center">
-                <p class="text-[10px] text-green-600 font-bold uppercase tracking-widest mb-1">Done</p>
-                <p class="text-3xl font-black text-green-900 leading-none"><span id="doneDays">0</span>d</p>
-            </div>
-        </div>
+<div class="app">
 
-        <div class="grid grid-cols-7 gap-1 text-center mb-2">
-            <template id="dayHeader"><div class="text-[10px] font-bold text-gray-400"></div></template>
-            <div class="text-[10px] font-bold text-gray-400">M</div>
-            <div class="text-[10px] font-bold text-gray-400">T</div>
-            <div class="text-[10px] font-bold text-gray-400">W</div>
-            <div class="text-[10px] font-bold text-gray-400">T</div>
-            <div class="text-[10px] font-bold text-gray-400">F</div>
-            <div class="text-[10px] font-bold text-gray-400">S</div>
-            <div class="text-[10px] font-bold text-gray-400">S</div>
-        </div>
+  <div class="header">
+    <span class="header-title">Office Tracker</span>
+    <button class="auth-btn" id="authBtn" onclick="handleAuth()">
+      <span id="authBtnContent">...</span>
+    </button>
+  </div>
 
-        <div id="calendarGrid" class="grid grid-cols-7 gap-1.5 mb-6"></div>
-
-        <div class="space-y-4 border-t pt-5">
-            <div>
-                <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Add Vacation/Holiday (DD-MM)</label>
-                <div class="flex gap-2">
-                    <input type="text" id="holidayInput" placeholder="e.g. 14-04" class="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
-                    <button onclick="addHoliday()" class="bg-slate-800 text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-black">Add</button>
-                </div>
-            </div>
-            
-            <div id="holidayTags" class="flex flex-wrap gap-2"></div>
-            
-            <div class="text-center">
-                <button onclick="resetAll()" class="text-[11px] text-red-400 hover:text-red-600 font-medium">Clear all local history</button>
-            </div>
-        </div>
+  <div class="card">
+    <div class="month-nav">
+      <button class="nav-btn" onclick="changeMonth(-1)">&#8592;</button>
+      <span class="month-label" id="monthLabel">—</span>
+      <button class="nav-btn" onclick="changeMonth(1)">&#8594;</button>
     </div>
 
-    <script>
-        // Use current date as starting point
-        let viewDate = new Date(); 
-        const baseHolidays = ["01-01", "04-25", "05-01", "06-10", "08-15", "10-05", "11-01", "12-01", "12-08", "12-25"];
-        
-        let customHolidays = JSON.parse(localStorage.getItem('customHolidays') || '[]');
-        let selectedDays = JSON.parse(localStorage.getItem('officeTrackingData') || '{}');
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-val" id="statWorking">—</div>
+        <div class="stat-label">Working</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" id="statGoal">—</div>
+        <div class="stat-label">Goal (60%)</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" id="statDone">—</div>
+        <div class="stat-label">Done</div>
+      </div>
+    </div>
 
-        function render() {
-            const m = viewDate.getMonth();
-            const y = viewDate.getFullYear();
-            const monthKey = `${y}-${m}`;
+    <div class="progress-wrap">
+      <div class="progress-bar" id="progressBar" style="width:0%"></div>
+    </div>
 
-            const names = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            document.getElementById('monthDisplay').innerText = `${names[m]} ${y}`;
+    <div class="day-headers">
+      <div class="day-hdr">M</div><div class="day-hdr">T</div><div class="day-hdr">W</div>
+      <div class="day-hdr">T</div><div class="day-hdr">F</div>
+      <div class="day-hdr" style="color:#ccc">S</div><div class="day-hdr" style="color:#ccc">S</div>
+    </div>
 
-            const grid = document.getElementById('calendarGrid');
-            grid.innerHTML = '';
-            
-            // European style (Mon-Sun)
-            const firstDayIndex = new Date(y, m, 1).getDay();
-            const offset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
-            const daysInMonth = new Date(y, m + 1, 0).getDate();
+    <div class="cal-grid" id="calGrid"></div>
 
-            let workingDaysCount = 0;
-            const currentMonthSelections = selectedDays[monthKey] || [];
+    <div class="divider"></div>
 
-            for (let i = 0; i < offset; i++) {
-                const empty = document.createElement('div');
-                empty.className = "empty";
-                grid.appendChild(empty);
-            }
+    <div class="section-label">Add Vacation / Bridge Holiday (DD-MM)</div>
+    <div class="input-row">
+      <input type="text" id="holidayInput" placeholder="e.g. 12-05" maxlength="5">
+      <button class="add-btn" onclick="addCustomHoliday()">Add</button>
+    </div>
+    <div class="tags" id="tags"></div>
 
-            for (let d = 1; d <= daysInMonth; d++) {
-                const dateObj = new Date(y, m, d);
-                const dayOfWeek = dateObj.getDay();
-                const holidayStr = `${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                const customStr = `${String(d).padStart(2, '0')}-${String(m + 1).padStart(2, '0')}`;
-                
-                const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
-                const isHoliday = baseHolidays.includes(holidayStr) || customHolidays.includes(customStr);
-                const isSelected = currentMonthSelections.includes(d);
+    <button class="reset-btn" onclick="confirmReset()">Clear all data</button>
+  </div>
+</div>
 
-                const dayEl = document.createElement('div');
-                dayEl.innerText = d;
-                dayEl.className = "day-card";
+<!-- Firebase SDKs -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getAuth, signInAnonymously, signInWithPopup,
+    GoogleAuthProvider, linkWithPopup, onAuthStateChanged, signOut
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, setDoc, onSnapshot
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-                if (isWeekend) {
-                    dayEl.classList.add("weekend");
-                } else if (isHoliday) {
-                    dayEl.classList.add("holiday");
-                } else {
-                    workingDaysCount++;
-                    if (isSelected) dayEl.classList.add("selected");
-                    dayEl.onclick = () => toggleDay(d);
-                }
-                grid.appendChild(dayEl);
-            }
+  // ─── REPLACE THIS BLOCK WITH YOUR FIREBASE CONFIG ──────────────────────────
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+  // ────────────────────────────────────────────────────────────────────────────
 
-            document.getElementById('goalDays').innerText = Math.ceil(workingDaysCount * 0.6);
-            document.getElementById('doneDays').innerText = currentMonthSelections.length;
-            renderHolidayTags();
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const provider = new GoogleAuthProvider();
+
+  // ─── Portugal national public holidays (MM-DD) ──────────────────────────────
+  const PT_HOLIDAYS = new Set([
+    "01-01","04-25","05-01","06-10",
+    "08-15","10-05","11-01","12-01","12-08","12-25"
+  ]);
+
+  // ─── State ───────────────────────────────────────────────────────────────────
+  let currentUser = null;
+  let viewDate = new Date();
+  let officeDays = {};    // { "2026-4": [5,6,7,...] }
+  let customHolidays = []; // ["12-05", ...]
+  let unsubSnapshot = null;
+
+  // ─── Auth state ──────────────────────────────────────────────────────────────
+  onAuthStateChanged(auth, async user => {
+    if (user) {
+      currentUser = user;
+      updateAuthBtn(user);
+      await loadUserData(user.uid);
+    } else {
+      await signInAnonymously(auth);
+    }
+  });
+
+  async function loadUserData(uid) {
+    if (unsubSnapshot) unsubSnapshot();
+    const ref = doc(db, "users", uid);
+    unsubSnapshot = onSnapshot(ref, snap => {
+      if (snap.exists()) {
+        const data = snap.data();
+        officeDays = data.officeDays || {};
+        customHolidays = data.customHolidays || [];
+      } else {
+        officeDays = {};
+        customHolidays = [];
+      }
+      render();
+      hideLoading();
+    });
+  }
+
+  async function saveData() {
+    if (!currentUser) return;
+    const ref = doc(db, "users", currentUser.uid);
+    await setDoc(ref, { officeDays, customHolidays }, { merge: true });
+  }
+
+  // ─── Auth actions (exposed globally) ─────────────────────────────────────────
+  window.handleAuth = async () => {
+    if (!currentUser) return;
+    if (currentUser.isAnonymous) {
+      try {
+        await linkWithPopup(currentUser, provider);
+        showToast("Signed in — your data is synced");
+      } catch (e) {
+        if (e.code === "auth/credential-already-in-use") {
+          // Account exists — sign in normally, data will load
+          await signInWithPopup(auth, provider);
+          showToast("Welcome back");
         }
+      }
+    } else {
+      if (confirm("Sign out?")) {
+        await signOut(auth);
+        officeDays = {};
+        customHolidays = [];
+        showToast("Signed out");
+      }
+    }
+  };
 
-        function toggleDay(day) {
-            const monthKey = `${viewDate.getFullYear()}-${viewDate.getMonth()}`;
-            if (!selectedDays[monthKey]) selectedDays[monthKey] = [];
-            
-            const idx = selectedDays[monthKey].indexOf(day);
-            if (idx > -1) selectedDays[monthKey].splice(idx, 1);
-            else selectedDays[monthKey].push(day);
+  // ─── Render ──────────────────────────────────────────────────────────────────
+  function render() {
+    const y = viewDate.getFullYear();
+    const m = viewDate.getMonth(); // 0-indexed
+    const monthKey = `${y}-${m}`;
+    const today = new Date();
 
-            localStorage.setItem('officeTrackingData', JSON.stringify(selectedDays));
-            render();
-        }
+    const monthNames = ["January","February","March","April","May","June",
+                        "July","August","September","October","November","December"];
+    document.getElementById("monthLabel").textContent = `${monthNames[m]} ${y}`;
 
-        function addHoliday() {
-            const input = document.getElementById('holidayInput');
-            const val = input.value.trim();
-            if (/^\d{2}-\d{2}$/.test(val)) {
-                if (!customHolidays.includes(val)) {
-                    customHolidays.push(val);
-                    localStorage.setItem('customHolidays', JSON.stringify(customHolidays));
-                    render();
-                }
-                input.value = '';
-            }
-        }
+    const grid = document.getElementById("calGrid");
+    grid.innerHTML = "";
 
-        function removeHoliday(val) {
-            customHolidays = customHolidays.filter(h => h !== val);
-            localStorage.setItem('customHolidays', JSON.stringify(customHolidays));
-            render();
-        }
+    const firstDay = new Date(y, m, 1).getDay();
+    const offset = firstDay === 0 ? 6 : firstDay - 1;
+    const daysInMonth = new Date(y, m + 1, 0).getDate();
 
-        function renderHolidayTags() {
-            const container = document.getElementById('holidayTags');
-            container.innerHTML = customHolidays.map(h => `
-                <div class="flex items-center gap-1 bg-slate-100 text-slate-600 px-2 py-1 rounded-lg text-[10px] font-bold border border-slate-200">
-                    ${h} <button onclick="removeHoliday('${h}')" class="text-slate-400 hover:text-red-500 ml-1 text-sm">×</button>
-                </div>
-            `).join('');
-        }
+    const currentOffice = officeDays[monthKey] || [];
+    let workingCount = 0;
 
-        function changeMonth(step) {
-            viewDate.setMonth(viewDate.getMonth() + step);
-            render();
-        }
+    for (let i = 0; i < offset; i++) {
+      const el = document.createElement("div");
+      el.className = "day empty";
+      grid.appendChild(el);
+    }
 
-        function resetAll() {
-            if(confirm("This will delete all your marks and custom holidays. Proceed?")) {
-                localStorage.clear();
-                window.location.reload();
-            }
-        }
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dateObj = new Date(y, m, d);
+      const dow = dateObj.getDay();
+      const mmdd = `${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+      const ddmm = `${String(d).padStart(2,"0")}-${String(m+1).padStart(2,"0")}`;
 
-        // Run on load
-        window.onload = render;
-    </script>
+      const isWeekend = dow === 0 || dow === 6;
+      const isPtHoliday = PT_HOLIDAYS.has(mmdd);
+      const isCustom = customHolidays.includes(ddmm);
+      const isHoliday = isPtHoliday || isCustom;
+      const isOffice = currentOffice.includes(d);
+      const isToday = today.getFullYear()===y && today.getMonth()===m && today.getDate()===d;
+
+      const el = document.createElement("div");
+      el.textContent = d;
+
+      if (isWeekend) {
+        el.className = "day weekend";
+      } else if (isHoliday) {
+        el.className = "day holiday";
+        el.title = isPtHoliday ? "Public holiday" : "Custom holiday";
+      } else {
+        workingCount++;
+        el.className = isOffice ? "day office" : "day workday";
+        el.onclick = () => toggleDay(d, monthKey);
+      }
+
+      if (isToday) el.classList.add("today-ring");
+      grid.appendChild(el);
+    }
+
+    const goal = Math.ceil(workingCount * 0.6);
+    const done = currentOffice.length;
+    const pct = workingCount > 0 ? Math.min((done / goal) * 100, 100) : 0;
+
+    document.getElementById("statWorking").textContent = workingCount;
+    document.getElementById("statGoal").textContent = goal;
+    const doneEl = document.getElementById("statDone");
+    doneEl.textContent = done;
+    doneEl.className = "stat-val" + (done >= goal ? " over" : done > 0 ? " under" : "");
+
+    const bar = document.getElementById("progressBar");
+    bar.style.width = pct + "%";
+    bar.className = "progress-bar" + (done >= goal ? " done" : "");
+
+    renderTags();
+  }
+
+  function toggleDay(d, monthKey) {
+    if (!officeDays[monthKey]) officeDays[monthKey] = [];
+    const idx = officeDays[monthKey].indexOf(d);
+    if (idx > -1) officeDays[monthKey].splice(idx, 1);
+    else officeDays[monthKey].push(d);
+    saveData();
+    render();
+  }
+
+  // ─── Custom holidays ──────────────────────────────────────────────────────────
+  window.addCustomHoliday = () => {
+    const input = document.getElementById("holidayInput");
+    const val = input.value.trim();
+    if (!/^\d{2}-\d{2}$/.test(val)) { showToast("Format: DD-MM"); return; }
+    if (!customHolidays.includes(val)) {
+      customHolidays.push(val);
+      saveData();
+      render();
+    }
+    input.value = "";
+  };
+
+  function removeCustomHoliday(val) {
+    customHolidays = customHolidays.filter(h => h !== val);
+    saveData();
+    render();
+  }
+  window.removeCustomHoliday = removeCustomHoliday;
+
+  function renderTags() {
+    const container = document.getElementById("tags");
+    container.innerHTML = customHolidays.length === 0 ? "" :
+      customHolidays.map(h => `
+        <div class="tag">
+          ${h}
+          <button onclick="removeCustomHoliday('${h}')" title="Remove">×</button>
+        </div>`).join("");
+  }
+
+  // ─── Month nav ────────────────────────────────────────────────────────────────
+  window.changeMonth = (step) => {
+    viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + step, 1);
+    render();
+  };
+
+  // ─── Reset ────────────────────────────────────────────────────────────────────
+  window.confirmReset = async () => {
+    if (confirm("Delete all tracked days and custom holidays?")) {
+      officeDays = {};
+      customHolidays = [];
+      await saveData();
+      render();
+      showToast("All data cleared");
+    }
+  };
+
+  // ─── Auth button UI ───────────────────────────────────────────────────────────
+  function updateAuthBtn(user) {
+    const content = document.getElementById("authBtnContent");
+    if (user.isAnonymous) {
+      content.innerHTML = `
+        <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+        Sign in to sync`;
+    } else {
+      const initials = (user.displayName || user.email || "U")
+        .split(" ").map(w => w[0]).join("").slice(0,2).toUpperCase();
+      content.innerHTML = `<div class="avatar">${initials}</div> ${user.displayName || "Account"}`;
+    }
+  }
+
+  // ─── Helpers ──────────────────────────────────────────────────────────────────
+  function hideLoading() {
+    document.getElementById("loading").classList.add("hidden");
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 2500);
+  }
+
+  // Enter key on input
+  document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("holidayInput").addEventListener("keydown", e => {
+      if (e.key === "Enter") window.addCustomHoliday();
+    });
+  });
+</script>
+
 </body>
 </html>
