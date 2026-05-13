@@ -16,13 +16,14 @@
       --text-muted: #888;
       --office: #1a1a1a;
       --office-text: #ffffff;
-      --holiday: #e8d5c4;
-      --holiday-text: #8a5a3a;
+      --pt-holiday: #e8d5c4;
+      --pt-holiday-text: #8a5a3a;
+      --vacation: #c7dff7;
+      --vacation-text: #1a4a7a;
       --weekend: #e8e5e0;
       --weekend-text: #bbb;
       --border: #e0ddd8;
       --accent: #2563eb;
-      --accent-light: #eff6ff;
       --danger: #dc2626;
       --radius: 10px;
       --font-mono: 'DM Mono', monospace;
@@ -40,335 +41,311 @@
       color: var(--text);
     }
 
-    .app {
-      width: 100%;
-      max-width: 400px;
-    }
+    .app { width: 100%; max-width: 400px; }
 
-    /* Header */
+    /* ── Header ── */
     .header {
-      display: flex;
-      align-items: center;
+      display: flex; align-items: center;
       justify-content: space-between;
       margin-bottom: 20px;
     }
-
     .header-title {
       font-family: var(--font-mono);
-      font-size: 13px;
-      font-weight: 500;
+      font-size: 13px; font-weight: 500;
       letter-spacing: 0.08em;
       color: var(--text-muted);
       text-transform: uppercase;
     }
-
-    /* Auth button */
     .auth-btn {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-family: var(--font-sans);
-      font-size: 12px;
-      font-weight: 500;
-      padding: 6px 12px;
-      border-radius: 20px;
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 500;
+      padding: 6px 12px; border-radius: 20px;
       border: 1px solid var(--border);
-      background: var(--card);
-      cursor: pointer;
-      color: var(--text);
-      transition: all 0.15s;
-      white-space: nowrap;
+      background: var(--card); cursor: pointer;
+      color: var(--text); transition: all 0.15s; white-space: nowrap;
     }
     .auth-btn:hover { background: var(--bg); border-color: #ccc; }
     .auth-btn .avatar {
-      width: 20px; height: 20px;
-      border-radius: 50%;
-      background: var(--office);
-      color: var(--office-text);
-      font-size: 10px;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--office); color: var(--office-text);
+      font-size: 10px; font-weight: 600;
       display: flex; align-items: center; justify-content: center;
-      font-weight: 600;
     }
-    .auth-btn .google-icon { width: 14px; height: 14px; flex-shrink: 0; }
+    .google-icon { width: 14px; height: 14px; flex-shrink: 0; }
 
-    /* Card */
+    /* ── Card ── */
     .card {
-      background: var(--card);
-      border-radius: 20px;
-      padding: 24px;
-      border: 1px solid var(--border);
+      background: var(--card); border-radius: 20px;
+      padding: 24px; border: 1px solid var(--border);
     }
 
-    /* Month nav */
+    /* ── Tabs ── */
+    .tabs {
+      display: flex; gap: 4px;
+      background: var(--bg);
+      border-radius: 12px; padding: 4px;
+      margin-bottom: 20px;
+    }
+    .tab-btn {
+      flex: 1; padding: 7px 0;
+      font-size: 12px; font-weight: 600;
+      border: none; border-radius: 9px;
+      cursor: pointer; transition: all 0.15s;
+      background: transparent; color: var(--text-muted);
+    }
+    .tab-btn.active {
+      background: var(--card); color: var(--text);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    /* ── Tab panels ── */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Month nav ── */
     .month-nav {
-      display: flex;
-      align-items: center;
+      display: flex; align-items: center;
       justify-content: space-between;
       margin-bottom: 20px;
     }
     .nav-btn {
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      border: 1px solid var(--border);
-      background: none;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 12px;
-      color: var(--text-muted);
-      transition: all 0.15s;
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 1px solid var(--border); background: none;
+      cursor: pointer; display: flex; align-items: center;
+      justify-content: center; font-size: 12px;
+      color: var(--text-muted); transition: all 0.15s;
     }
     .nav-btn:hover { background: var(--bg); color: var(--text); }
     .month-label {
       font-family: var(--font-mono);
-      font-size: 15px;
-      font-weight: 500;
-      letter-spacing: 0.04em;
+      font-size: 15px; font-weight: 500; letter-spacing: 0.04em;
     }
 
-    /* Stats */
+    /* ── Stats ── */
     .stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 20px;
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px; margin-bottom: 20px;
     }
     .stat {
-      background: var(--bg);
-      border-radius: var(--radius);
-      padding: 12px 10px;
-      text-align: center;
+      background: var(--bg); border-radius: var(--radius);
+      padding: 12px 10px; text-align: center;
     }
     .stat-val {
       font-family: var(--font-mono);
-      font-size: 22px;
-      font-weight: 500;
-      line-height: 1;
-      margin-bottom: 4px;
+      font-size: 22px; font-weight: 500;
+      line-height: 1; margin-bottom: 4px;
     }
     .stat-val.over { color: #16a34a; }
     .stat-val.under { color: var(--danger); }
     .stat-label {
-      font-size: 10px;
-      font-weight: 500;
+      font-size: 10px; font-weight: 500;
       text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: var(--text-muted);
+      letter-spacing: 0.07em; color: var(--text-muted);
     }
 
-    /* Progress bar */
+    /* ── Progress ── */
     .progress-wrap {
-      height: 4px;
-      background: var(--border);
-      border-radius: 2px;
-      margin-bottom: 20px;
-      overflow: hidden;
+      height: 4px; background: var(--border);
+      border-radius: 2px; margin-bottom: 16px; overflow: hidden;
     }
     .progress-bar {
-      height: 100%;
-      border-radius: 2px;
-      background: var(--office);
-      transition: width 0.3s ease;
+      height: 100%; border-radius: 2px;
+      background: var(--office); transition: width 0.3s ease;
     }
     .progress-bar.done { background: #16a34a; }
 
-    /* Day headers */
+    /* ── Vacation mode bar ── */
+    .vacation-bar {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      background: var(--bg); border-radius: var(--radius);
+      padding: 10px 14px; margin-bottom: 14px;
+      border: 1.5px solid transparent; transition: all 0.2s; cursor: pointer;
+    }
+    .vacation-bar.active { background: var(--vacation); border-color: #93c5fd; }
+    .vacation-bar-left { display: flex; align-items: center; gap: 8px; }
+    .vacation-bar-label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    .vacation-bar.active .vacation-bar-label { color: var(--vacation-text); }
+    .vacation-hint { font-size: 11px; color: var(--text-muted); }
+    .vacation-bar.active .vacation-hint { color: var(--vacation-text); opacity: 0.75; }
+
+    .toggle-switch { position: relative; width: 36px; height: 20px; flex-shrink: 0; }
+    .toggle-switch input { display: none; }
+    .toggle-track {
+      position: absolute; inset: 0;
+      background: #d1d5db; border-radius: 20px;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .toggle-track::after {
+      content: ''; position: absolute;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: white; top: 3px; left: 3px;
+      transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .toggle-switch input:checked + .toggle-track { background: var(--accent); }
+    .toggle-switch input:checked + .toggle-track::after { transform: translateX(16px); }
+
+    /* ── Calendar ── */
     .day-headers {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 4px;
-      margin-bottom: 6px;
+      display: grid; grid-template-columns: repeat(7,1fr);
+      gap: 4px; margin-bottom: 6px;
     }
     .day-hdr {
-      text-align: center;
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--text-muted);
-      font-weight: 500;
-      padding: 2px 0;
+      text-align: center; font-family: var(--font-mono);
+      font-size: 10px; color: var(--text-muted);
+      font-weight: 500; padding: 2px 0;
     }
-
-    /* Calendar grid */
     .cal-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 4px;
-      margin-bottom: 20px;
+      display: grid; grid-template-columns: repeat(7,1fr);
+      gap: 4px; margin-bottom: 8px;
     }
-
     .day {
-      aspect-ratio: 1;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-mono);
-      font-size: 13px;
-      font-weight: 500;
-      border: 1.5px solid transparent;
-      transition: all 0.12s;
-      position: relative;
+      aspect-ratio: 1; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono); font-size: 13px; font-weight: 500;
+      border: 1.5px solid transparent; transition: all 0.12s;
+      position: relative; user-select: none;
     }
     .day.empty { visibility: hidden; }
-    .day.weekend {
-      background: var(--weekend);
-      color: var(--weekend-text);
+    .day.weekend { background: var(--weekend); color: var(--weekend-text); }
+    .day.pt-holiday {
+      background: var(--pt-holiday); color: var(--pt-holiday-text); cursor: default;
     }
-    .day.holiday {
-      background: var(--holiday);
-      color: var(--holiday-text);
-      cursor: default;
-    }
-    .day.holiday::after {
-      content: '';
-      position: absolute;
-      bottom: 4px;
-      width: 4px; height: 4px;
-      border-radius: 50%;
-      background: var(--holiday-text);
-      opacity: 0.5;
+    .day.pt-holiday::after {
+      content: ''; position: absolute; bottom: 4px;
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--pt-holiday-text); opacity: 0.5;
     }
     .day.workday {
-      background: var(--bg);
-      color: var(--text);
-      cursor: pointer;
-      border-color: var(--border);
+      background: var(--bg); color: var(--text);
+      cursor: pointer; border-color: var(--border);
     }
-    .day.workday:hover {
-      border-color: #aaa;
-      transform: scale(1.06);
-    }
+    .day.workday:hover { border-color: #aaa; transform: scale(1.06); }
     .day.office {
-      background: var(--office);
-      color: var(--office-text);
-      border-color: var(--office);
+      background: var(--office); color: var(--office-text); border-color: var(--office);
     }
-    .day.office:hover {
-      background: #333;
-      transform: scale(1.06);
-    }
-    .day.today-ring {
-      box-shadow: 0 0 0 2px var(--accent);
+    .day.office:hover { background: #333; transform: scale(1.06); }
+    .day.vacation {
+      background: var(--vacation); color: var(--vacation-text);
+      border-color: #93c5fd; cursor: default;
     }
 
-    /* Divider */
-    .divider {
-      height: 1px;
-      background: var(--border);
-      margin-bottom: 18px;
+    /* vacation mode: workdays get dashed hint */
+    .vacation-mode .day.workday {
+      border-style: dashed; border-color: #93c5fd; cursor: pointer;
     }
+    .vacation-mode .day.workday:hover,
+    .vacation-mode .day.office:hover,
+    .vacation-mode .day.vacation:hover {
+      background: #dbeafe; color: var(--vacation-text);
+      border-color: #93c5fd; border-style: solid; transform: scale(1.06); cursor: pointer;
+    }
+    .vacation-mode .day.vacation { cursor: pointer; }
 
-    /* Vacation input */
+    .day.range-start { box-shadow: 0 0 0 2.5px var(--accent) !important; }
+    .day.today-ring { box-shadow: 0 0 0 2px var(--accent); }
+
+    /* cross-month notice */
+    .cross-month-notice {
+      font-size: 11px; color: var(--vacation-text);
+      background: var(--vacation); border: 1px solid #93c5fd;
+      border-radius: 8px; padding: 7px 12px;
+      margin-bottom: 14px; display: none;
+    }
+    .cross-month-notice.show { display: block; }
+
+    /* ── Section label ── */
     .section-label {
-      font-size: 10px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
-      margin-bottom: 8px;
+      font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--text-muted); margin-bottom: 8px; margin-top: 16px;
     }
-    .input-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 10px;
+    .section-label:first-child { margin-top: 0; }
+
+    /* ── Holidays tab ── */
+    .holiday-empty {
+      text-align: center; padding: 32px 0;
+      font-size: 13px; color: var(--text-muted);
     }
+
+    .vacation-item {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      background: var(--vacation); border: 1px solid #93c5fd;
+      border-radius: 8px; padding: 10px 12px;
+      margin-bottom: 6px; font-size: 12px;
+      color: var(--vacation-text); font-weight: 500;
+    }
+    .vacation-item-remove {
+      background: none; border: none; cursor: pointer;
+      color: var(--vacation-text); font-size: 16px; line-height: 1;
+      opacity: 0.45; padding: 0 2px; transition: opacity 0.15s;
+    }
+    .vacation-item-remove:hover { opacity: 1; color: var(--danger); }
+
+    .tag-item {
+      display: flex; align-items: center; gap: 4px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 6px; padding: 6px 10px;
+      font-family: var(--font-mono); font-size: 11px;
+      color: var(--text-muted); margin-bottom: 6px;
+      justify-content: space-between;
+    }
+    .tag-item button {
+      background: none; border: none; cursor: pointer;
+      color: var(--text-muted); font-size: 14px; line-height: 1;
+      transition: color 0.12s;
+    }
+    .tag-item button:hover { color: var(--danger); }
+
+    /* ── Input ── */
+    .input-row { display: flex; gap: 8px; margin-bottom: 10px; }
     .input-row input {
-      flex: 1;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 8px 12px;
-      font-family: var(--font-mono);
-      font-size: 13px;
-      color: var(--text);
-      outline: none;
+      flex: 1; background: var(--bg);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 8px 12px; font-family: var(--font-mono);
+      font-size: 13px; color: var(--text); outline: none;
       transition: border-color 0.15s;
     }
     .input-row input:focus { border-color: #aaa; }
     .input-row input::placeholder { color: var(--text-muted); }
     .add-btn {
-      background: var(--office);
-      color: var(--office-text);
-      border: none;
-      border-radius: var(--radius);
-      padding: 8px 14px;
-      font-family: var(--font-sans);
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s;
+      background: var(--office); color: var(--office-text);
+      border: none; border-radius: var(--radius);
+      padding: 8px 14px; font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: background 0.15s;
     }
     .add-btn:hover { background: #333; }
 
-    /* Tags */
-    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; min-height: 0; }
-    .tag {
-      display: flex; align-items: center; gap: 4px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 3px 8px;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-    .tag button {
-      background: none; border: none; cursor: pointer;
-      color: var(--text-muted); font-size: 14px; line-height: 1;
-      padding: 0 0 0 2px;
-      transition: color 0.12s;
-    }
-    .tag button:hover { color: var(--danger); }
-
-    /* Reset */
     .reset-btn {
-      display: block;
-      margin: 0 auto;
-      background: none;
-      border: none;
-      font-size: 11px;
-      color: var(--text-muted);
-      cursor: pointer;
-      font-family: var(--font-sans);
-      transition: color 0.15s;
-      padding: 4px;
+      display: block; margin: 16px auto 0;
+      background: none; border: none; font-size: 11px;
+      color: var(--text-muted); cursor: pointer;
+      transition: color 0.15s; padding: 4px;
     }
     .reset-btn:hover { color: var(--danger); }
 
-    /* Loading overlay */
+    /* ── Loading & Toast ── */
     .loading {
-      position: fixed; inset: 0;
-      background: var(--bg);
+      position: fixed; inset: 0; background: var(--bg);
       display: flex; align-items: center; justify-content: center;
-      z-index: 100;
-      transition: opacity 0.3s;
+      z-index: 100; transition: opacity 0.3s;
     }
     .loading.hidden { opacity: 0; pointer-events: none; }
     .spinner {
       width: 24px; height: 24px;
-      border: 2px solid var(--border);
-      border-top-color: var(--office);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
+      border: 2px solid var(--border); border-top-color: var(--office);
+      border-radius: 50%; animation: spin 0.7s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* Toast */
     .toast {
-      position: fixed;
-      bottom: 24px; left: 50%;
+      position: fixed; bottom: 24px; left: 50%;
       transform: translateX(-50%) translateY(8px);
-      background: var(--office);
-      color: var(--office-text);
-      font-size: 12px;
-      font-family: var(--font-sans);
-      font-weight: 500;
-      padding: 8px 16px;
-      border-radius: 20px;
-      opacity: 0;
-      transition: all 0.2s;
-      pointer-events: none;
-      white-space: nowrap;
-      z-index: 200;
+      background: var(--office); color: var(--office-text);
+      font-size: 12px; font-weight: 500;
+      padding: 8px 16px; border-radius: 20px;
+      opacity: 0; transition: all 0.2s;
+      pointer-events: none; white-space: nowrap; z-index: 200;
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   </style>
@@ -379,7 +356,6 @@
 <div class="toast" id="toast"></div>
 
 <div class="app">
-
   <div class="header">
     <span class="header-title">Office Tracker</span>
     <button class="auth-btn" id="authBtn" onclick="handleAuth()">
@@ -388,53 +364,88 @@
   </div>
 
   <div class="card">
-    <div class="month-nav">
-      <button class="nav-btn" onclick="changeMonth(-1)">&#8592;</button>
-      <span class="month-label" id="monthLabel">—</span>
-      <button class="nav-btn" onclick="changeMonth(1)">&#8594;</button>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('calendar', this)">Calendar</button>
+      <button class="tab-btn" onclick="switchTab('holidays', this)">Holidays</button>
+      <button class="tab-btn" onclick="switchTab('settings', this)">Settings</button>
     </div>
 
-    <div class="stats">
-      <div class="stat">
-        <div class="stat-val" id="statWorking">—</div>
-        <div class="stat-label">Working</div>
+    <!-- ── CALENDAR TAB ── -->
+    <div class="tab-panel active" id="tab-calendar">
+      <div class="month-nav">
+        <button class="nav-btn" onclick="changeMonth(-1)">&#8592;</button>
+        <span class="month-label" id="monthLabel">—</span>
+        <button class="nav-btn" onclick="changeMonth(1)">&#8594;</button>
       </div>
-      <div class="stat">
-        <div class="stat-val" id="statGoal">—</div>
-        <div class="stat-label">Goal (60%)</div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-val" id="statWorking">—</div>
+          <div class="stat-label">Working</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val" id="statGoal">—</div>
+          <div class="stat-label">Goal (60%)</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val" id="statDone">—</div>
+          <div class="stat-label">Done</div>
+        </div>
       </div>
-      <div class="stat">
-        <div class="stat-val" id="statDone">—</div>
-        <div class="stat-label">Done</div>
+
+      <div class="progress-wrap">
+        <div class="progress-bar" id="progressBar" style="width:0%"></div>
       </div>
+
+      <!-- Holiday mode toggle -->
+      <div class="vacation-bar" id="vacationBar" onclick="clickVacationBar(event)">
+        <div class="vacation-bar-left">
+          <label class="toggle-switch" onclick="event.stopPropagation()">
+            <input type="checkbox" id="vacationToggle" onchange="toggleVacationMode()">
+            <div class="toggle-track"></div>
+          </label>
+          <span class="vacation-bar-label">✈ Holiday Mode</span>
+        </div>
+        <span class="vacation-hint" id="vacationHint">tap to activate</span>
+      </div>
+
+      <!-- Cross-month selection notice -->
+      <div class="cross-month-notice" id="crossMonthNotice"></div>
+
+      <div class="day-headers">
+        <div class="day-hdr">M</div><div class="day-hdr">T</div>
+        <div class="day-hdr">W</div><div class="day-hdr">T</div>
+        <div class="day-hdr">F</div>
+        <div class="day-hdr" style="color:#ccc">S</div>
+        <div class="day-hdr" style="color:#ccc">S</div>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
     </div>
 
-    <div class="progress-wrap">
-      <div class="progress-bar" id="progressBar" style="width:0%"></div>
+    <!-- ── HOLIDAYS TAB ── -->
+    <div class="tab-panel" id="tab-holidays">
+      <div class="section-label">Booked Holidays</div>
+      <div id="vacationList"></div>
+
+      <div class="section-label">Bridge / Custom Public Holidays</div>
+      <div id="customHolidayList"></div>
     </div>
 
-    <div class="day-headers">
-      <div class="day-hdr">M</div><div class="day-hdr">T</div><div class="day-hdr">W</div>
-      <div class="day-hdr">T</div><div class="day-hdr">F</div>
-      <div class="day-hdr" style="color:#ccc">S</div><div class="day-hdr" style="color:#ccc">S</div>
+    <!-- ── SETTINGS TAB ── -->
+    <div class="tab-panel" id="tab-settings">
+      <div class="section-label">Add Bridge / Custom Holiday (DD-MM)</div>
+      <div class="input-row">
+        <input type="text" id="holidayInput" placeholder="e.g. 12-05" maxlength="5">
+        <button class="add-btn" onclick="addCustomHoliday()">Add</button>
+      </div>
+      <button class="reset-btn" onclick="confirmReset()">Clear all data</button>
     </div>
 
-    <div class="cal-grid" id="calGrid"></div>
-
-    <div class="divider"></div>
-
-    <div class="section-label">Add Vacation / Bridge Holiday (DD-MM)</div>
-    <div class="input-row">
-      <input type="text" id="holidayInput" placeholder="e.g. 12-05" maxlength="5">
-      <button class="add-btn" onclick="addCustomHoliday()">Add</button>
-    </div>
-    <div class="tags" id="tags"></div>
-
-    <button class="reset-btn" onclick="confirmReset()">Clear all data</button>
   </div>
 </div>
 
-<!-- Firebase SDKs -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import {
@@ -442,17 +453,17 @@
     GoogleAuthProvider, linkWithPopup, onAuthStateChanged, signOut
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import {
-    getFirestore, doc, getDoc, setDoc, onSnapshot
+    getFirestore, doc, setDoc, onSnapshot
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  // ─── REPLACE THIS BLOCK WITH YOUR FIREBASE CONFIG ──────────────────────────
-  const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+  // ─── REPLACE WITH YOUR FIREBASE CONFIG ──────────────────────────────────────
+ const firebaseConfig = {
+    apiKey: "AIzaSyCkRKhW8rv4sAIIBgP2FOKmNHQhYohJZhw",
+    authDomain: "office-tracker-e03e0.firebaseapp.com",
+    projectId: "office-tracker-e03e0",
+    storageBucket: "office-tracker-e03e0.firebasestorage.app",
+    messagingSenderId: "649617031426",
+    appId: "1:649617031426:web:2e68116180b1fcd3f5821b"
   };
   // ────────────────────────────────────────────────────────────────────────────
 
@@ -461,20 +472,32 @@
   const db = getFirestore(app);
   const provider = new GoogleAuthProvider();
 
-  // ─── Portugal national public holidays (MM-DD) ──────────────────────────────
+  // Portugal national public holidays (MM-DD)
   const PT_HOLIDAYS = new Set([
-    "01-01","04-25","05-01","06-10",
+    "01-01","04-25","05-01","06-10", "06-04",
     "08-15","10-05","11-01","12-01","12-08","12-25"
   ]);
 
   // ─── State ───────────────────────────────────────────────────────────────────
   let currentUser = null;
   let viewDate = new Date();
-  let officeDays = {};    // { "2026-4": [5,6,7,...] }
-  let customHolidays = []; // ["12-05", ...]
+  let officeDays = {};
+  let customHolidays = [];
+  let vacations = []; // [{ id, start:"YYYY-M-D", end:"YYYY-M-D", label }]
   let unsubSnapshot = null;
+  let vacationMode = false;
+  let rangeStart = null; // { y, m, d } — persists across month navigation
 
-  // ─── Auth state ──────────────────────────────────────────────────────────────
+  // ─── Tabs ─────────────────────────────────────────────────────────────────────
+  window.switchTab = (name, btn) => {
+    document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    document.getElementById(`tab-${name}`).classList.add("active");
+    btn.classList.add("active");
+    if (name === "holidays") renderHolidaysTab();
+  };
+
+  // ─── Auth ─────────────────────────────────────────────────────────────────────
   onAuthStateChanged(auth, async user => {
     if (user) {
       currentUser = user;
@@ -490,12 +513,12 @@
     const ref = doc(db, "users", uid);
     unsubSnapshot = onSnapshot(ref, snap => {
       if (snap.exists()) {
-        const data = snap.data();
-        officeDays = data.officeDays || {};
-        customHolidays = data.customHolidays || [];
+        const d = snap.data();
+        officeDays = d.officeDays || {};
+        customHolidays = d.customHolidays || [];
+        vacations = d.vacations || [];
       } else {
-        officeDays = {};
-        customHolidays = [];
+        officeDays = {}; customHolidays = []; vacations = [];
       }
       render();
       hideLoading();
@@ -504,53 +527,153 @@
 
   async function saveData() {
     if (!currentUser) return;
-    const ref = doc(db, "users", currentUser.uid);
-    await setDoc(ref, { officeDays, customHolidays }, { merge: true });
+    await setDoc(doc(db, "users", currentUser.uid),
+      { officeDays, customHolidays, vacations }, { merge: true });
   }
 
-  // ─── Auth actions (exposed globally) ─────────────────────────────────────────
-  window.handleAuth = async () => {
-    if (!currentUser) return;
-    if (currentUser.isAnonymous) {
-      try {
-        await linkWithPopup(currentUser, provider);
-        showToast("Signed in — your data is synced");
-      } catch (e) {
-        if (e.code === "auth/credential-already-in-use") {
-          // Account exists — sign in normally, data will load
-          await signInWithPopup(auth, provider);
-          showToast("Welcome back");
+  // ─── Helpers ──────────────────────────────────────────────────────────────────
+  function parseKey(key) {
+    const [y, m, d] = key.split("-").map(Number);
+    return { y, m, d };
+  }
+
+  function isWeekendDate(y, m, d) {
+    const dow = new Date(y, m, d).getDay();
+    return dow === 0 || dow === 6;
+  }
+
+  function isPtHolidayDate(y, m, d) {
+    const mmdd = `${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    return PT_HOLIDAYS.has(mmdd);
+  }
+
+  function isCustomHolidayDate(m, d) {
+    const ddmm = `${String(d).padStart(2,"0")}-${String(m+1).padStart(2,"0")}`;
+    return customHolidays.includes(ddmm);
+  }
+
+  // Returns Set of "YYYY-M-D" strings — only working days within vacation ranges
+  function getVacationWorkingDays(y, m) {
+    const vacSet = new Set();
+    for (const v of vacations) {
+      const s = parseKey(v.start);
+      const e = parseKey(v.end);
+      const cur = new Date(s.y, s.m, s.d);
+      const end = new Date(e.y, e.m, e.d);
+      while (cur <= end) {
+        const cy = cur.getFullYear(), cm = cur.getMonth(), cd = cur.getDate();
+        if (cy === y && cm === m) {
+          // BUG FIX 1: only count actual working days — skip weekends and holidays
+          if (!isWeekendDate(cy, cm, cd) && !isPtHolidayDate(cy, cm, cd) && !isCustomHolidayDate(cm, cd)) {
+            vacSet.add(`${cy}-${cm}-${cd}`);
+          }
         }
-      }
-    } else {
-      if (confirm("Sign out?")) {
-        await signOut(auth);
-        officeDays = {};
-        customHolidays = [];
-        showToast("Signed out");
+        cur.setDate(cur.getDate() + 1);
       }
     }
+    return vacSet;
+  }
+
+  function fmtDate(y, m, d) {
+    const mn = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    return `${String(d).padStart(2,"0")} ${mn[m]} ${y}`;
+  }
+
+  function addVacation(sy, sm, sd, ey, em, ed) {
+    const startKey = `${sy}-${sm}-${sd}`;
+    const endKey = `${ey}-${em}-${ed}`;
+    const label = startKey === endKey
+      ? fmtDate(sy, sm, sd)
+      : `${fmtDate(sy, sm, sd)} – ${fmtDate(ey, em, ed)}`;
+    vacations.push({ id: `${Date.now()}`, start: startKey, end: endKey, label });
+    saveData(); render();
+    showToast("Holiday saved");
+  }
+
+  window.removeVacation = id => {
+    vacations = vacations.filter(v => v.id !== id);
+    saveData(); render(); renderHolidaysTab();
   };
 
-  // ─── Render ──────────────────────────────────────────────────────────────────
+  window.removeCustomHoliday = val => {
+    customHolidays = customHolidays.filter(h => h !== val);
+    saveData(); render(); renderHolidaysTab();
+  };
+
+  // ─── Vacation mode ────────────────────────────────────────────────────────────
+  window.clickVacationBar = e => {
+    const toggle = document.getElementById("vacationToggle");
+    toggle.checked = !toggle.checked;
+    toggleVacationMode();
+  };
+
+  window.toggleVacationMode = () => {
+    vacationMode = document.getElementById("vacationToggle").checked;
+    if (!vacationMode) rangeStart = null; // cancel selection on toggle off
+    const bar = document.getElementById("vacationBar");
+    vacationMode ? bar.classList.add("active") : bar.classList.remove("active");
+    updateHint();
+    render();
+  };
+
+  function updateHint() {
+    const hint = document.getElementById("vacationHint");
+    if (!vacationMode) { hint.textContent = "tap to activate"; return; }
+    hint.textContent = rangeStart ? "now click end day" : "click start day";
+  }
+
+  // BUG FIX 2: rangeStart persists across months; show cross-month notice
+  function updateCrossMonthNotice() {
+    const notice = document.getElementById("crossMonthNotice");
+    if (vacationMode && rangeStart) {
+      const y = viewDate.getFullYear(), m = viewDate.getMonth();
+      const sameMonth = rangeStart.y === y && rangeStart.m === m;
+      if (!sameMonth) {
+        notice.textContent = `Start: ${fmtDate(rangeStart.y, rangeStart.m, rangeStart.d)} — now click the end day`;
+        notice.classList.add("show");
+        return;
+      }
+    }
+    notice.classList.remove("show");
+  }
+
+  function handleVacationClick(y, m, d) {
+    if (!rangeStart) {
+      rangeStart = { y, m, d };
+      updateHint();
+      updateCrossMonthNotice();
+      render();
+    } else {
+      const s = new Date(rangeStart.y, rangeStart.m, rangeStart.d);
+      const e = new Date(y, m, d);
+      if (e < s) addVacation(y, m, d, rangeStart.y, rangeStart.m, rangeStart.d);
+      else addVacation(rangeStart.y, rangeStart.m, rangeStart.d, y, m, d);
+      rangeStart = null;
+      updateHint();
+      updateCrossMonthNotice();
+    }
+  }
+
+  // ─── Render calendar ──────────────────────────────────────────────────────────
   function render() {
     const y = viewDate.getFullYear();
-    const m = viewDate.getMonth(); // 0-indexed
+    const m = viewDate.getMonth();
     const monthKey = `${y}-${m}`;
     const today = new Date();
-
     const monthNames = ["January","February","March","April","May","June",
                         "July","August","September","October","November","December"];
+
     document.getElementById("monthLabel").textContent = `${monthNames[m]} ${y}`;
 
     const grid = document.getElementById("calGrid");
     grid.innerHTML = "";
+    grid.className = "cal-grid" + (vacationMode ? " vacation-mode" : "");
 
     const firstDay = new Date(y, m, 1).getDay();
     const offset = firstDay === 0 ? 6 : firstDay - 1;
     const daysInMonth = new Date(y, m + 1, 0).getDate();
-
     const currentOffice = officeDays[monthKey] || [];
+    const vacationWorkDays = getVacationWorkingDays(y, m); // FIX 1: only working days
     let workingCount = 0;
 
     for (let i = 0; i < offset; i++) {
@@ -560,110 +683,151 @@
     }
 
     for (let d = 1; d <= daysInMonth; d++) {
-      const dateObj = new Date(y, m, d);
-      const dow = dateObj.getDay();
+      const dow = new Date(y, m, d).getDay();
       const mmdd = `${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
       const ddmm = `${String(d).padStart(2,"0")}-${String(m+1).padStart(2,"0")}`;
+      const dayKey = `${y}-${m}-${d}`;
 
-      const isWeekend = dow === 0 || dow === 6;
-      const isPtHoliday = PT_HOLIDAYS.has(mmdd);
-      const isCustom = customHolidays.includes(ddmm);
-      const isHoliday = isPtHoliday || isCustom;
+      const isWknd = dow === 0 || dow === 6;
+      const isPtHol = PT_HOLIDAYS.has(mmdd);
+      const isCustomHol = customHolidays.includes(ddmm);
+      const isHoliday = isPtHol || isCustomHol;
+      const isVacation = vacationWorkDays.has(dayKey);
       const isOffice = currentOffice.includes(d);
       const isToday = today.getFullYear()===y && today.getMonth()===m && today.getDate()===d;
+      const isRangeStart = rangeStart && rangeStart.y===y && rangeStart.m===m && rangeStart.d===d;
 
       const el = document.createElement("div");
       el.textContent = d;
 
-      if (isWeekend) {
+      if (isWknd) {
         el.className = "day weekend";
       } else if (isHoliday) {
-        el.className = "day holiday";
-        el.title = isPtHoliday ? "Public holiday" : "Custom holiday";
+        el.className = "day pt-holiday";
+        el.title = isPtHol ? "Public holiday" : "Custom holiday";
+      } else if (isVacation) {
+        // BUG FIX 4: vacation days are never clickable outside vacation mode
+        el.className = "day vacation";
+        el.title = "Holiday";
+        if (vacationMode) el.onclick = () => handleVacationClick(y, m, d);
       } else {
         workingCount++;
         el.className = isOffice ? "day office" : "day workday";
-        el.onclick = () => toggleDay(d, monthKey);
+        el.onclick = () => vacationMode
+          ? handleVacationClick(y, m, d)
+          : toggleDay(d, monthKey);
       }
 
+      if (isRangeStart) el.classList.add("range-start");
       if (isToday) el.classList.add("today-ring");
       grid.appendChild(el);
     }
 
-    const goal = Math.ceil(workingCount * 0.6);
+    // BUG FIX 1: effectiveWorking = workingCount (already excludes vacations since
+    // vacation days never hit the workingCount++ branch) minus nothing extra needed.
+    // vacationWorkDays.size gives us how many working days are on holiday this month.
+    const effectiveWorking = workingCount; // vacation days are already excluded above
+    const goal = Math.round(effectiveWorking * 0.6);
     const done = currentOffice.length;
-    const pct = workingCount > 0 ? Math.min((done / goal) * 100, 100) : 0;
+    const pct = effectiveWorking > 0 ? Math.min((done / Math.max(goal, 1)) * 100, 100) : 0;
 
-    document.getElementById("statWorking").textContent = workingCount;
+    document.getElementById("statWorking").textContent = effectiveWorking;
     document.getElementById("statGoal").textContent = goal;
     const doneEl = document.getElementById("statDone");
     doneEl.textContent = done;
     doneEl.className = "stat-val" + (done >= goal ? " over" : done > 0 ? " under" : "");
-
     const bar = document.getElementById("progressBar");
     bar.style.width = pct + "%";
     bar.className = "progress-bar" + (done >= goal ? " done" : "");
 
-    renderTags();
+    updateCrossMonthNotice();
   }
 
+  // ─── Holidays tab render ───────────────────────────────────────────────────────
+  function renderHolidaysTab() {
+    // Booked vacations
+    const vacList = document.getElementById("vacationList");
+    if (vacations.length === 0) {
+      vacList.innerHTML = `<div class="holiday-empty">No holidays booked yet.<br>Use Holiday Mode on the calendar.</div>`;
+    } else {
+      vacList.innerHTML = vacations.slice().reverse().map(v => `
+        <div class="vacation-item">
+          <span>✈ ${v.label}</span>
+          <button class="vacation-item-remove" onclick="removeVacation('${v.id}')">×</button>
+        </div>`).join("");
+    }
+
+    // Custom public holidays
+    const custList = document.getElementById("customHolidayList");
+    if (customHolidays.length === 0) {
+      custList.innerHTML = `<div class="holiday-empty" style="padding:16px 0">None added.</div>`;
+    } else {
+      custList.innerHTML = customHolidays.map(h => `
+        <div class="tag-item">
+          <span>${h}</span>
+          <button onclick="removeCustomHoliday('${h}')">×</button>
+        </div>`).join("");
+    }
+  }
+
+  // ─── Office toggle ────────────────────────────────────────────────────────────
   function toggleDay(d, monthKey) {
     if (!officeDays[monthKey]) officeDays[monthKey] = [];
     const idx = officeDays[monthKey].indexOf(d);
     if (idx > -1) officeDays[monthKey].splice(idx, 1);
     else officeDays[monthKey].push(d);
-    saveData();
-    render();
+    saveData(); render();
   }
 
-  // ─── Custom holidays ──────────────────────────────────────────────────────────
+  // ─── Custom public holidays ───────────────────────────────────────────────────
   window.addCustomHoliday = () => {
     const input = document.getElementById("holidayInput");
     const val = input.value.trim();
     if (!/^\d{2}-\d{2}$/.test(val)) { showToast("Format: DD-MM"); return; }
-    if (!customHolidays.includes(val)) {
-      customHolidays.push(val);
-      saveData();
-      render();
-    }
+    if (!customHolidays.includes(val)) { customHolidays.push(val); saveData(); render(); }
     input.value = "";
+    showToast("Holiday added");
   };
 
-  function removeCustomHoliday(val) {
-    customHolidays = customHolidays.filter(h => h !== val);
-    saveData();
-    render();
-  }
-  window.removeCustomHoliday = removeCustomHoliday;
-
-  function renderTags() {
-    const container = document.getElementById("tags");
-    container.innerHTML = customHolidays.length === 0 ? "" :
-      customHolidays.map(h => `
-        <div class="tag">
-          ${h}
-          <button onclick="removeCustomHoliday('${h}')" title="Remove">×</button>
-        </div>`).join("");
-  }
-
   // ─── Month nav ────────────────────────────────────────────────────────────────
-  window.changeMonth = (step) => {
+  // BUG FIX 2: do NOT reset rangeStart on month change
+  window.changeMonth = step => {
     viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + step, 1);
     render();
+    updateHint();
   };
 
   // ─── Reset ────────────────────────────────────────────────────────────────────
   window.confirmReset = async () => {
-    if (confirm("Delete all tracked days and custom holidays?")) {
-      officeDays = {};
-      customHolidays = [];
-      await saveData();
-      render();
+    if (confirm("Delete all tracked days, holidays and vacations?")) {
+      officeDays = {}; customHolidays = []; vacations = [];
+      await saveData(); render(); renderHolidaysTab();
       showToast("All data cleared");
     }
   };
 
-  // ─── Auth button UI ───────────────────────────────────────────────────────────
+  // ─── Auth UI ──────────────────────────────────────────────────────────────────
+  window.handleAuth = async () => {
+    if (!currentUser) return;
+    if (currentUser.isAnonymous) {
+      try {
+        await linkWithPopup(currentUser, provider);
+        showToast("Signed in — your data is synced");
+      } catch (e) {
+        if (e.code === "auth/credential-already-in-use") {
+          await signInWithPopup(auth, provider);
+          showToast("Welcome back");
+        }
+      }
+    } else {
+      if (confirm("Sign out?")) {
+        await signOut(auth);
+        officeDays = {}; customHolidays = []; vacations = [];
+        showToast("Signed out");
+      }
+    }
+  };
+
   function updateAuthBtn(user) {
     const content = document.getElementById("authBtnContent");
     if (user.isAnonymous) {
@@ -682,25 +846,19 @@
     }
   }
 
-  // ─── Helpers ──────────────────────────────────────────────────────────────────
-  function hideLoading() {
-    document.getElementById("loading").classList.add("hidden");
-  }
+  function hideLoading() { document.getElementById("loading").classList.add("hidden"); }
 
   function showToast(msg) {
     const t = document.getElementById("toast");
-    t.textContent = msg;
-    t.classList.add("show");
+    t.textContent = msg; t.classList.add("show");
     setTimeout(() => t.classList.remove("show"), 2500);
   }
 
-  // Enter key on input
   document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("holidayInput").addEventListener("keydown", e => {
       if (e.key === "Enter") window.addCustomHoliday();
     });
   });
 </script>
-
 </body>
 </html>
