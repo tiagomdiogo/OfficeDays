@@ -23,6 +23,44 @@
   --font-sans: 'DM Sans', sans-serif;
 }
 
+[data-theme='dark'] {
+  --bg: #1a1917;
+  --card: #242220;
+  --text: #f0ede8;
+  --text-muted: #6b6862;
+  --office: #f0ede8;
+  --office-text: #1a1917;
+  --pt-holiday: #2e2318;
+  --pt-holiday-text: #c4956a;
+  --vacation: #0f1f33;
+  --vacation-text: #7eb8f7;
+  --weekend: #211f1d;
+  --weekend-text: #444;
+  --border: #2e2b28;
+  --accent: #3b82f6;
+  --danger: #ef4444;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #1a1917;
+    --card: #242220;
+    --text: #f0ede8;
+    --text-muted: #6b6862;
+    --office: #f0ede8;
+    --office-text: #1a1917;
+    --pt-holiday: #2e2318;
+    --pt-holiday-text: #c4956a;
+    --vacation: #0f1f33;
+    --vacation-text: #7eb8f7;
+    --weekend: #211f1d;
+    --weekend-text: #444;
+    --border: #2e2b28;
+    --accent: #3b82f6;
+    --danger: #ef4444;
+  }
+}
+
 body {
   font-family: var(--font-sans);
   background: var(--bg);
@@ -37,6 +75,15 @@ body {
 #root { width: 100%; display: flex; justify-content: center; }
 
 .app { width: 100%; max-width: 400px; }
+
+.theme-btn {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1px solid var(--border); background: var(--card);
+  cursor: pointer; font-size: 14px; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.theme-btn:hover { background: var(--bg); border-color: #aaa; }
 
 /* ── Header ── */
 .header {
@@ -218,7 +265,7 @@ body {
 .day.office {
   background: var(--office); color: var(--office-text); border-color: var(--office);
 }
-.day.office:hover { background: #333; transform: scale(1.06); }
+.day.office:hover { opacity: 0.85; transform: scale(1.06); }
 .day.vacation {
   background: var(--vacation); color: var(--vacation-text); border-color: #93c5fd;
 }
@@ -294,7 +341,7 @@ body {
   padding: 8px 14px; font-size: 12px; font-weight: 600;
   cursor: pointer; transition: background 0.15s;
 }
-.add-btn:hover { background: #333; }
+.add-btn:hover { opacity: 0.85; }
 
 .reset-btn {
   display: block; margin: 16px auto 0;

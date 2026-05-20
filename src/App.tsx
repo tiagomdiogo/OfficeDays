@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useAuth } from './hooks/useAuth';
 import { useUserData } from './hooks/useUserData';
 import { AuthButton } from './components/AuthButton';
@@ -30,6 +30,32 @@ export default function App() {
   const [vacationMode, setVacationMode] = useState(false);
   const [rangeStart, setRangeStart] = useState<RangeStart | null>(null);
   const [toast, setToast] = useState('');
+
+  // Theme: null = follow system, 'light' | 'dark' = user override
+  type ThemeOverride = 'light' | 'dark' | null;
+  const [themeOverride, setThemeOverride] = useState<ThemeOverride>(() => {
+    return (localStorage.getItem('themeOverride') as ThemeOverride) ?? null;
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (themeOverride) {
+      root.setAttribute('data-theme', themeOverride);
+      localStorage.setItem('themeOverride', themeOverride);
+    } else {
+      root.removeAttribute('data-theme');
+      localStorage.removeItem('themeOverride');
+    }
+  }, [themeOverride]);
+
+  const cycleTheme = useCallback(() => {
+    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    setThemeOverride((current) => {
+      if (current === null) return systemDark ? 'light' : 'dark';
+      if (current === 'dark') return 'light';
+      return null; // back to system
+    });
+  }, []);
 
   const year  = viewDate.getFullYear();
   const month = viewDate.getMonth();
@@ -120,7 +146,12 @@ export default function App() {
       <div className="app">
         <div className="header">
           <span className="header-title">Office Tracker</span>
-          <AuthButton user={user} onSignIn={signInWithGoogle} onSignOut={handleSignOut} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <button className="theme-btn" onClick={cycleTheme} title="Toggle theme">
+              {themeOverride === 'light' ? '☀️' : themeOverride === 'dark' ? '🌙' : '💻'}
+            </button>
+            <AuthButton user={user} onSignIn={signInWithGoogle} onSignOut={handleSignOut} />
+          </div>
         </div>
 
         <div className="card">
